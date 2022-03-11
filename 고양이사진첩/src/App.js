@@ -1,11 +1,13 @@
-import { Nodes } from "./src/component/Nodes.js";
-import { Breadcrumb } from "./src/component/Breadcrumb.js";
-import { request } from "./src/api/api.js";
-import { ImageView } from "./src/component/ImageView.js";
+import { Nodes } from "./component/Nodes.js";
+import { Breadcrumb } from "./component/Breadcrumb.js";
+import { request } from "./api/api.js";
+import { ImageView } from "./component/ImageView.js";
+import Loading from "./component/Loding.js";
 
-function App($app) {
+export default function App($app) {
   this.state = {
     isRoot: false,
+    isLoding: false,
     nodes: [],
     depth: [],
     selectedFilePath: null,
@@ -19,6 +21,7 @@ function App($app) {
       nodes: this.state.nodes,
     });
     imageView.setState(this.state.selectedFilePath);
+    loading.setState(this.state.isLoading);
   };
 
   const breadcrumb = new Breadcrumb({
@@ -35,6 +38,10 @@ function App($app) {
     onClick: async (node) => {
       try {
         if (node.type === "DIRECTORY") {
+          this.setState({
+            ...this.state,
+            isLoading: true,
+          });
           const nextNodes = await request(node.id);
           this.setState({
             ...this.state,
@@ -50,6 +57,11 @@ function App($app) {
         }
       } catch (e) {
         console.log(e);
+      } finally {
+        this.setState({
+          ...this.state,
+          isLoading: false,
+        });
       }
     },
     onBackClick: async () => {
@@ -61,6 +73,10 @@ function App($app) {
             ? null
             : nextState.depth[nextState.depth.length - 1].id;
         if (prevNodeId === null) {
+          this.setState({
+            ...this.state,
+            isLoading: true,
+          });
           const rootNodes = await request();
           this.setState({
             ...nextState,
@@ -68,6 +84,10 @@ function App($app) {
             nodes: rootNodes,
           });
         } else {
+          this.setState({
+            ...this.state,
+            isLoading: true,
+          });
           const prevNodes = await request(prevNodeId);
           this.setState({
             ...nextNodes,
@@ -86,8 +106,14 @@ function App($app) {
     initialState: this.state.selectedNodeImage,
   });
 
+  const loading = new Loading({ $app, initialState: this.state.isLoding });
+
   const init = async () => {
     try {
+      this.setState({
+        ...this.state,
+        isLoading: true,
+      });
       const rootNodes = await request();
       this.setState({
         ...this.state,
@@ -97,9 +123,13 @@ function App($app) {
       console.log(this.state);
     } catch (e) {
       console.log("에러", e);
+    } finally {
+      this.setState({
+        ...this.state,
+        isLoading: false,
+      });
     }
   };
 
   init();
 }
-new App(document.querySelector(".App"));
