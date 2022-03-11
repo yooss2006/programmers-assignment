@@ -35,23 +35,40 @@ export function Nodes({ $app, initialState, onClick, onBackClick }) {
         ? `<div class="Node"><img src="./assets/prev.png"/></div> ${nodesTemplate}`
         : nodesTemplate;
     }
+    // this.$target.querySelectorAll(".Node img").forEach(($node) => {
+    //   $node.addEventListener("click", (e) => {
+    //     // dataset을 통해 data-로 시작하는 attribute를 꺼내올 수 있음
+    //     const { nodeId } = e.target.dataset;
+    //     console.log(e.target.dataset);
+    //     if (!nodeId) {
+    //       this.onBackClick();
+    //     }
+    //     const selectedNode = this.state.nodes.find(
+    //       (node) => node.id === nodeId
+    //     );
 
-    this.$target.querySelectorAll(".Node img").forEach(($node) => {
-      $node.addEventListener("click", (e) => {
-        // dataset을 통해 data-로 시작하는 attribute를 꺼내올 수 있음
-        const { nodeId } = e.target.dataset;
-        console.log(e.target.dataset);
-        if (!nodeId) {
-          this.onBackClick();
-        }
-        const selectedNode = this.state.nodes.find(
-          (node) => node.id === nodeId
-        );
-
-        if (selectedNode) {
-          this.onClick(selectedNode);
-        }
-      });
-    });
+    //     if (selectedNode) {
+    //       this.onClick(selectedNode);
+    //     }
+    //   });
+    // });
   };
+  this.$target.addEventListener("click", (e) => {
+    const $node = e.target.closest(".Node");
+
+    if ($node) {
+      const { nodeId } = $node.dataset;
+
+      if (!nodeId) {
+        this.onBackClick();
+        return;
+      }
+
+      const selectedNode = this.state.nodes.find((node) => node.id === nodeId);
+
+      if (selectedNode) {
+        this.onClick(selectedNode);
+      }
+    }
+  });
 }
