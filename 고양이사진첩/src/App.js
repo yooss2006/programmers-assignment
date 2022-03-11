@@ -27,7 +27,28 @@ export default function App($app) {
 
   const breadcrumb = new Breadcrumb({
     $app,
-    initialState: this.state.depth,
+    initialState: [],
+    onClick: (index) => {
+      if (index === null) {
+        this.setState({
+          ...this.state,
+          depth: [],
+          nodes: cashe.root,
+        });
+        return;
+      }
+      if (index === this.state.depth.length - 1) {
+        return;
+      }
+      const nextState = { ...this.state };
+      const nextDepth = this.state.depth.slice(0, index + 1);
+      console.log(this.state.depth);
+      this.setState({
+        ...nextState,
+        depth: nextDepth,
+        nodes: cashe[nextDepth[nextDepth.length - 1].id],
+      });
+    },
   });
 
   const nodes = new Nodes({
