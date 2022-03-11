@@ -1,9 +1,10 @@
-export function Nodes({ $app, initialState, onClick }) {
+export function Nodes({ $app, initialState, onClick, onBackClick }) {
   this.state = initialState;
   this.$target = document.createElement("div");
   this.$target.className = "Nodes";
   $app.appendChild(this.$target);
   this.onClick = onClick;
+  this.onBackClick = onBackClick;
 
   this.setState = (nextState) => {
     this.state = nextState;
@@ -23,7 +24,7 @@ export function Nodes({ $app, initialState, onClick }) {
 
           return `
           <div class="Node" data-node-id="${node.id}">
-            <img src="${iconPath}" />
+            <img src="${iconPath}" data-node-id="${node.id}"/>
             <div>${node.name}</div>
           </div>
         `;
@@ -31,14 +32,18 @@ export function Nodes({ $app, initialState, onClick }) {
         .join("");
 
       this.$target.innerHTML = !this.state.isRoot
-        ? `<div class="Node"><img src="/assets/prev.png"></div>${nodesTemplate}`
+        ? `<div class="Node"><img src="./assets/prev.png"/></div> ${nodesTemplate}`
         : nodesTemplate;
     }
 
-    this.$target.querySelectorAll(".Node").forEach(($node) => {
+    this.$target.querySelectorAll(".Node img").forEach(($node) => {
       $node.addEventListener("click", (e) => {
         // dataset을 통해 data-로 시작하는 attribute를 꺼내올 수 있음
         const { nodeId } = e.target.dataset;
+        console.log(e.target.dataset);
+        if (!nodeId) {
+          this.onBackClick();
+        }
         const selectedNode = this.state.nodes.find(
           (node) => node.id === nodeId
         );
