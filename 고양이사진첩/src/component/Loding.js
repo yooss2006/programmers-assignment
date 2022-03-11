@@ -11,7 +11,6 @@ export default function Loading({ $app, initialState }) {
   };
 
   this.render = () => {
-    console.log(this.state);
     this.$target.innerHTML = `<div class="content"><img src="./assets/nyan-cat.png"></div>`;
 
     this.$target.style.display = this.state ? "block" : "none";

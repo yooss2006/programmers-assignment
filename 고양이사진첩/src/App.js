@@ -3,6 +3,7 @@ import { Breadcrumb } from "./component/Breadcrumb.js";
 import { request } from "./api/api.js";
 import { ImageView } from "./component/ImageView.js";
 import Loading from "./component/Loding.js";
+const cashe = {};
 
 export default function App($app) {
   this.state = {
@@ -38,17 +39,27 @@ export default function App($app) {
     onClick: async (node) => {
       try {
         if (node.type === "DIRECTORY") {
-          this.setState({
-            ...this.state,
-            isLoading: true,
-          });
-          const nextNodes = await request(node.id);
-          this.setState({
-            ...this.state,
-            isRoot: false,
-            depth: [...this.state.depth, node],
-            nodes: nextNodes,
-          });
+          if (cashe[node.id]) {
+            this.setState({
+              ...this.state,
+              depth: [...this.state.depth, node],
+              nodes: cashe[node.id],
+              isRoot: false,
+            });
+          } else {
+            this.setState({
+              ...this.state,
+              isLoading: true,
+            });
+            const nextNodes = await request(node.id);
+            this.setState({
+              ...this.state,
+              isRoot: false,
+              depth: [...this.state.depth, node],
+              nodes: nextNodes,
+            });
+            cashe[node.id] = nextNodes;
+          }
         } else if (node.type === "FILE") {
           this.setState({
             ...this.state,
@@ -87,6 +98,7 @@ export default function App($app) {
           this.setState({
             ...this.state,
             isLoading: true,
+            nodes: cache[prevNodes],
           });
           const prevNodes = await request(prevNodeId);
           this.setState({
@@ -120,7 +132,7 @@ export default function App($app) {
         isRoot: true,
         nodes: rootNodes,
       });
-      console.log(this.state);
+      cashe.root = rootNodes;
     } catch (e) {
       console.log("에러", e);
     } finally {
