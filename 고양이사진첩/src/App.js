@@ -15,6 +15,7 @@ export default function App($app) {
   };
 
   this.setState = (nextState) => {
+    console.log(this.state, cashe);
     this.state = nextState;
     breadcrumb.setState(this.state.depth);
     nodes.setState({
@@ -119,7 +120,7 @@ export default function App($app) {
           this.setState({
             ...this.state,
             isLoading: true,
-            nodes: cache[prevNodes],
+            nodes: cashe[prevNodes],
           });
           const prevNodes = await request(prevNodeId);
           this.setState({

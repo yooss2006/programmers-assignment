@@ -3,6 +3,7 @@ export function Nodes({ $app, initialState, onClick, onBackClick }) {
   this.$target = document.createElement("div");
   this.$target.className = "Nodes";
   $app.appendChild(this.$target);
+
   this.onClick = onClick;
   this.onBackClick = onBackClick;
 
@@ -53,6 +54,7 @@ export function Nodes({ $app, initialState, onClick, onBackClick }) {
     //   });
     // });
   };
+
   this.$target.addEventListener("click", (e) => {
     const $node = e.target.closest(".Node");
 
