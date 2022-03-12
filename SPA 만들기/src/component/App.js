@@ -1,6 +1,7 @@
 import ProductListPage from "./ProductListPage.js";
 import ProductDetailPage from "./ProductDetailPage.js";
 import CartPage from "./CartPage.js";
+import { init } from "./router.js";
 
 export default function App({ $target }) {
   this.route = () => {
@@ -22,5 +23,7 @@ export default function App({ $target }) {
     }
   };
 
+  init(this.route);
+  window.addEventListener("popstate", this.route);
   this.route();
 }

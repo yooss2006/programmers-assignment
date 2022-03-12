@@ -1,4 +1,5 @@
-const API_END_POINT = API_END_POINT;
+const API_END_POINT =
+  "https://uikt6pohhh.execute-api.ap-northeast-2.amazonaws.com/dev";
 export const request = async (url, options = {}) => {
   try {
     const fullUrl = `${API_END_POINT}${url}`;
